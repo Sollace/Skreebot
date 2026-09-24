@@ -18,7 +18,8 @@ bat_noises = [
 ]
 
 # Create the bot instance
-bot = commands.Bot(command_prefix='!',intents=discord.Intents(messages=True, message_content=True, guilds=True))
+#bot = commands.Bot(command_prefix='!',intents=discord.Intents(messages=True, message_content=True, guilds=True))
+bot = commands.Bot(intents=discord.Intents(messages=True, message_content=True, guilds=True))
 
 # Startup events
 @bot.event
@@ -57,7 +58,12 @@ async def on_message(message):
     await bot.process_commands(message)
 
 # Search for a bat
-@bot.command(pass_context=True)
+# bot.command(pass_context=True)
+@bot.slash_command(
+  name="bat",
+  description="Search for a bat"
+)
+#@bot.command(pass_context=True)
 async def bat(ctx,*,user_search_string=''):
     # Define base search string
     search_string = 'bat pony,'
@@ -88,31 +94,40 @@ async def bat(ctx,*,user_search_string=''):
     # Output result (or fail if no result)
     try:
         search_result = 'https://derpibooru.org/' + str(search_data['images'][0]['id'])
-        await ctx.send(search_result)
+        await ctx.respond(search_result)
         loginteract(ctx,'Searched for \'' + search_string + '\' and returned ' + search_result)
     except IndexError:
-        await ctx.send('No result found. Sad skree :(')
+        await ctx.respond('No result found. Sad skree :(')
         loginteract(ctx,'Searched for \'' + search_string + '\' but found no results.')
 
 # Bot info
-@bot.command()
+# @bot.command(pass_context=True)
+@bot.slash_command(
+  name="info",
+  description="Bot info"
+)
+#@bot.command(pass_context=True)
 async def info(ctx):
     embed = discord.Embed(title='SkreeBot', description='A bat pony bot that does bat pony things.', color=0x7a3c8c)
     embed.add_field(name='Author', value='Joey')
     embed.add_field(name='Server Count', value=f'{len(bot.guilds)}')
-    await ctx.send(embed=embed)
+    await ctx.respond(embed=embed)
     loginteract(ctx,'Displayed info box.')
 
 # Bot help
 bot.remove_command('help')
-@bot.command()
+#@bot.command(pass_context=True)
+@bot.slash_command(
+   name="help",
+   description="Show help message for working skreebot"
+)
 async def help(ctx):
     embed = discord.Embed(title='SkreeBot', description='A bat pony bot that does bat pony things.\n\u200b', color=0x7a3c8c)
     embed.add_field(name='!bat', value='Searches for bat ponies on Derpibooru. Specify tags to refine your search.', inline=False)
     embed.add_field(name='!info', value='Shows some info about the bot.', inline=False)
     embed.add_field(name='!help', value='Shows this help dialog.', inline=False)
     embed.add_field(name='Bat Noises', value='This bot likes bat noises. Making them may entice a reaction.', inline=False)
-    await ctx.send(embed=embed)
+    await ctx.respond(embed=embed)
     loginteract(ctx,'Displayed help box.')
 
 # Ignore commands from other bots (don't show error)
@@ -124,7 +139,11 @@ async def on_command_error(ctx, error):
 
 # Stop command
 if(config['runmode'] == 'test'):
-    @bot.command()
+    #@bot.command()
+    @bot.slash_command(
+       name="stop",
+       description="Shuts down skreebot. Skreeee-up!"
+    )
     async def stop(ctx):
         logevent('Stop command received. Stopping.')
         exit()
