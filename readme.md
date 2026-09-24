@@ -1,6 +1,8 @@
 # SkreeBot
 A bat pony bot that does bat pony things
 
+Original by [Joey](https://github.com/joeyponi)
+
 ## Features
 - Skrees a lot
 - Reacts with bat emojis
@@ -24,3 +26,4 @@ If testing, change "runmode" to "test" in config.json, this will allow you to us
 Run the bot
 
     $ python skreebot.py
+
